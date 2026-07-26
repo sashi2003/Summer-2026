@@ -1,0 +1,16 @@
+with grouped as (
+    select *, 
+    id - Row_Number() over (order by id) as grp
+    from stadium 
+    where people >= 100
+)
+
+select id, visit_date, people 
+from grouped 
+where grp in (
+    select grp 
+    from grouped 
+    group by grp 
+    having count(*) >= 3
+)
+order by visit_date;
